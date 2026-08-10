@@ -15,7 +15,7 @@ test('products page is displayed', async ({page}) => {
     example: button, link, checkbox, radio button, etc. and we can use the name of the element as the accessible name.
     accessible name is the name of the element that is used by screen readers to read the element.
     */
-    await expect(page.getByRole('heading',{name: 'Products'})).toBeVisible();
+    await expect(page.getByTestId('title')).toHaveText('Products');
     
 });
 
@@ -28,7 +28,7 @@ test('user can add products to cart', async({page}) =>{
 
     // navigate to products page
     await expect(page).toHaveURL('/inventory.html');
-    await expect(page.getByRole('heading',{name: 'Products'})).toBeVisible();
+    await expect(page.getByTestId('title')).toHaveText('Products');
 
 
     const products = page.locator('.inventory_item');
@@ -56,7 +56,7 @@ test('user can remove products from cart', async({page}) =>{
 
     // add product to cart
     await product.getByRole('button',{name: 'Add to cart'}).click();
-    await expect(product.locator('.shopping_cart_badge')).toHaveText('1');
+    await expect(page.locator('.shopping_cart_badge')).toHaveText('1');
 
     // remove product from cart
     await product.getByRole('button',{name: 'Remove'}).click();
