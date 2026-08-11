@@ -1,13 +1,15 @@
 import test, { expect } from "@playwright/test";
 
-test('products page is displayed', async ({page}) => {
-
-    // login before navigating to products page
+// logging in before each test
+test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.getByPlaceholder('Username').fill('standard_user');
     await page.getByPlaceholder('Password').fill('secret_sauce');
     await page.getByRole('button', { name: 'Login' }).click();
+});
 
+
+test('products page is displayed', async ({page}) => {
     // going to products page
     await expect(page).toHaveURL('/inventory.html');
 
@@ -20,14 +22,8 @@ test('products page is displayed', async ({page}) => {
 });
 
 test('user can add products to cart', async({page}) =>{
-    // login before navigating to products page
-    await page.goto('/');
-    await page.getByPlaceholder('Username').fill('standard_user');
-    await page.getByPlaceholder('Password').fill('secret_sauce');
-    await page.getByRole('button', { name: 'Login' }).click();
 
-    // navigate to products page
-    await expect(page).toHaveURL('/inventory.html');
+    // Verifying header
     await expect(page.getByTestId('title')).toHaveText('Products');
 
 
@@ -43,14 +39,7 @@ test('user can add products to cart', async({page}) =>{
 
 
 test('user can remove products from cart', async({page}) =>{
-    await page.goto('/');
-    await page.getByPlaceholder('Username').fill('standard_user');
-    await page.getByPlaceholder('Password').fill('secret_sauce');
-    await page.getByRole('button', { name: 'Login' }).click();
-
-    // navigate to products page
-    await expect(page).toHaveURL('/inventory.html');
-
+    
     const products = page.locator('.inventory_item');
     const product = products.first();
 
@@ -63,5 +52,21 @@ test('user can remove products from cart', async({page}) =>{
     await expect(page.locator('.shopping_cart_badge')).not.toBeVisible();
 
 });
-// test('user can view product details', async({page}) =>{});
+
+
+test('user can view product details', async({page}) =>{
+    const products = page.locator('.inventory_item');
+    const count = await products.count();
+
+    // check description of all product
+    for (let i = 0; i < count; i++){
+        const product = products.nth(i)
+
+        await expect(product.getByTestId('inventory-item-desc')).toHaveText(/\S+/);
+    }
+});
+
+
 // test('user can sort products by name', async({page}) =>{});
+
+// test('user can sort products by price', async({page}) =>{});
