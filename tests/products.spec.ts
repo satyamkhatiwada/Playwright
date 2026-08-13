@@ -67,6 +67,27 @@ test('user can view product details', async({page}) =>{
 });
 
 
-// test('user can sort products by name', async({page}) =>{});
+test('user can sort products by name and price', async({page}) =>{
+    const sort = page.getByTestId('product-sort-container');
+    const products = page.locator('.inventory_item_name');
 
-// test('user can sort products by price', async({page}) =>{});
+
+    // a to z sorting
+    await sort.selectOption('az');
+
+    const nameAZ = await products.allTextContents();
+
+    // ... is a spread operator it creates an array same as names
+    const sortedNamesAZ = [...nameAZ].sort();
+    expect(nameAZ).toEqual(sortedNamesAZ);
+
+    
+    // sort in Z to A
+    await sort.selectOption('za');
+    const namesZA = await products.allTextContents();
+
+    const sortedNamesZA = [...namesZA].sort().reverse();
+
+    expect(namesZA).toEqual(sortedNamesZA);
+
+});
